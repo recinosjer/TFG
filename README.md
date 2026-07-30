@@ -7,11 +7,11 @@ Migración de una plataforma editorial de OJS 3.1 a OJS 3.4.0.1, con personaliza
 ## Índice
 
 - [Resumen](#resumen)
-- [Modelo del dominio](#modelo-del-dominio)
+- [Contextualización: el modelo del dominio](#contextualización-el-modelo-del-dominio)
 - [Actores](#actores)
-- [Casos de uso presentados](#casos-de-uso-presentados)
+- [Los cuatro casos de uso presentados](#los-cuatro-casos-de-uso-presentados)
 - [Detalle de los casos de uso](#detalle-de-los-casos-de-uso)
-- [Arquitectura interna: modelos, controladores y vistas](#arquitectura-interna-modelos-controladores-y-vistas)
+- [De los casos de uso a la arquitectura: análisis y diseño](#de-los-casos-de-uso-a-la-arquitectura-análisis-y-diseño)
 - [Prototipos](#prototipos)
 - [La plataforma en funcionamiento](#la-plataforma-en-funcionamiento)
 - [Arquitectura y stack tecnológico](#arquitectura-y-stack-tecnológico)
@@ -27,7 +27,7 @@ El grupo editorial objeto de estudio operaba sobre OJS 3.1, con interfaces poco 
 
 De todo el catálogo de casos de uso del sistema, esta presentación se centra en los **cuatro más relevantes**: los dos que sustentan técnicamente todo el proyecto (**Migrar Datos**, **Personalizar Plataforma**) y los dos que son funcionalidad exclusiva de esta instalación, ausente en un OJS estándar (**Consultar Artículos Aceptados**, **Solicitar Certificado**).
 
-## Modelo del dominio
+## Contextualización: el modelo del dominio
 
 ![Modelo del Dominio](FinalTFG-Actual2026/modelDelDominio2Corregido.png)
 
@@ -43,16 +43,25 @@ Jerarquía de herencia: **Lector** (base) → **Autor** / **Revisor** → **Edit
 - **Autor / Revisor**: actores de Solicitar Certificado.
 - **Lector** (y cualquier visitante, autenticado o no): actor de Consultar Artículos Aceptados.
 
-## Casos de uso presentados
+## Los cuatro casos de uso presentados
 
-| Caso de uso | Actor | Por qué es relevante |
-|---|---|---|
-| **Migrar Datos** | Administrador del Sitio | Base técnica del proyecto: usuarios/roles se importan con el módulo nativo de OJS; números y artículos se convierten de estructura con `FastConverter` (3.1 → 3.4.0.1) y se importan también con el módulo nativo, sin perder datos. |
-| **Personalizar Plataforma** | Administrador del Sitio | Activa el tema propio y el plugin genérico, y despliega el microservicio de certificados — sin tocar el core de OJS. |
-| **Consultar Artículos Aceptados** | Lector / cualquier usuario | Funcionalidad que no existe en una instalación estándar de OJS: muestra artículos ya aprobados pero aún sin número asignado. |
-| **Solicitar Certificado** | Autor / Revisor | Genera en PDF un certificado de participación, consultando directamente la base de datos vía el microservicio. |
+| Caso de uso | Actor | Entidades del dominio implicadas | Por qué es relevante |
+|---|---|---|---|
+| **Migrar Datos** | Administrador del Sitio | `Usuario`, `Revista`, `Numero`, `Articulo` | Base técnica del proyecto: usuarios/roles se importan con el módulo nativo de OJS; números y artículos se convierten de estructura con `FastConverter` (3.1 → 3.4.0.1) y se importan también con el módulo nativo, sin perder datos. |
+| **Personalizar Plataforma** | Administrador del Sitio | `Plataforma`, `Revista` | Activa el tema propio y el plugin genérico, y despliega el microservicio de certificados — sin tocar el core de OJS. |
+| **Consultar Artículos Aceptados** | Lector / cualquier usuario | `Articulo` (estado calculado, sin `Numero` asignado) | Funcionalidad que no existe en una instalación estándar de OJS: muestra artículos ya aprobados pero aún sin número asignado. |
+| **Solicitar Certificado** | Autor / Revisor | `Certificado`, `Usuario`, `Envio` / `Revision` | Genera en PDF un certificado de participación, consultando directamente la base de datos vía el microservicio. |
 
-Diagramas de los módulos a los que pertenecen:
+**Diagramas de contexto de los actores implicados:**
+
+| Actor | Diagrama de contexto |
+|---|---|
+| Administrador del Sitio (Migrar Datos, Personalizar Plataforma) | ![Contexto Administrador](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoAdministrador.png) |
+| Autor (Solicitar Certificado) | ![Contexto Autor](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoAutor.png) |
+| Revisor (Solicitar Certificado) | ![Contexto Revisor](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoRevisor.png) |
+| Lector (Consultar Artículos Aceptados) | ![Contexto Lector](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoLector.png) |
+
+**Diagramas de los módulos a los que pertenecen:**
 
 | Módulo | Diagrama |
 |---|---|
@@ -62,24 +71,59 @@ Diagramas de los módulos a los que pertenecen:
 
 ## Detalle de los casos de uso
 
-| Caso de uso | Diagrama de actividad | Diagrama de secuencia |
-|---|---|---|
-| Migrar Datos | ![Detalle Migrar Datos](FinalTFG-Actual2026/DetalleCasoDeUso2Migrar.png) | *(solo existe el fuente PlantUML: [DiagramasDeSecuenciaMigrar.txt](FinalTFG-Actual2026/DiagramasDeSecuenciaMigrar.txt); falta exportarlo a imagen)* |
-| Personalizar Plataforma | ![Detalle Personalizar](FinalTFG-Actual2026/DetalleCasoDeUso2Personalizar.png) | *(solo existe el fuente PlantUML: [DiagramasDeSecuenciaPersonalizar.txt](FinalTFG-Actual2026/DiagramasDeSecuenciaPersonalizar.txt); falta exportarlo a imagen)* |
-| Consultar Artículos Aceptados | ![Detalle Artículos Aceptados](FinalTFG-Actual2026/DetalleCasoDeUso2ArticulosAceptados.png) | ![Secuencia Artículos Aceptados](FinalTFG-Actual2026/DiagramaDeSecuenciaCasoDeUso2ArticulosAceptados.png) |
-| Solicitar Certificado | ![Detalle Certificado](FinalTFG-Actual2026/DetalleCasoDeUso2Certificados.png) | *(no existe ni siquiera el fuente en el repo; falta crearlo)* |
+### Migrar Datos
 
-Análisis de caso de uso (modelo-vista-controlador):
+**Diagrama de actividad**
 
-| Caso de uso | Análisis MVC |
+![Actividad Migrar Datos](FinalTFG-Actual2026/DetalleCasoDeUsoMigrar.png)
+
+**Diagrama de secuencia**
+
+![Secuencia Migrar Datos](FinalTFG-Actual2026/DetalleCasoDeUso2Migrar.png)
+
+### Personalizar Plataforma
+
+**Diagrama de actividad**
+
+![Actividad Personalizar Plataforma](FinalTFG-Actual2026/DetalleCasoDeUsoPersonalizar.png)
+
+**Diagrama de secuencia**
+
+![Secuencia Personalizar Plataforma](FinalTFG-Actual2026/DetalleCasoDeUso2Personalizar.png)
+
+### Consultar Artículos Aceptados
+
+**Diagrama de actividad**
+
+![Actividad Artículos Aceptados](FinalTFG-Actual2026/DetalleDeCasosDeUsoArticulosAceptados.png)
+
+**Diagrama de secuencia**
+
+![Secuencia Artículos Aceptados](FinalTFG-Actual2026/DiagramaDeSecuenciaCasoDeUso2ArticulosAceptados.png)
+
+### Solicitar Certificado
+
+**Diagrama de actividad**
+
+![Actividad Solicitar Certificado](FinalTFG-Actual2026/DetalleCasoDeUsoCertificado.png)
+
+**Diagrama de secuencia**
+
+![Secuencia Solicitar Certificado](FinalTFG-Actual2026/DetalleCasoDeUso2Certificados.png)
+
+## De los casos de uso a la arquitectura: análisis y diseño
+
+**Análisis** (de cada caso de uso a sus clases de análisis):
+
+| Caso de uso | Análisis |
 |---|---|
 | Migrar Datos | ![Análisis Migrar Datos](FinalTFG-Actual2026/DiagramaMVC/AnalisisCasoDeUsoMigrarDatos.png) |
 | Personalizar Plataforma | ![Análisis Personalizar Plataforma](FinalTFG-Actual2026/DiagramaMVC/AnalisisCasoDeUsoPersonalizarPlataforma.png) |
 | Solicitar Certificado | ![Análisis Certificado](FinalTFG-Actual2026/DiagramaMVC/AnalisisCasoDeUsoCertificado.png) |
 
-## Arquitectura interna: modelos, controladores y vistas
+Estas clases de análisis (`CertificadoService`, `UserImportExportPlugin`, `FastConverter`, etc.) son las que después se organizan en las tres capas de diseño:
 
-| Capa | Diagrama |
+| Capa de diseño | Diagrama |
 |---|---|
 | Modelos | ![Modelos](FinalTFG-Actual2026/DiagramaMVC/DiagramaModels.png) |
 | Controladores | ![Controladores](FinalTFG-Actual2026/DiagramaMVC/DiagramaControllers.png) |
@@ -87,15 +131,17 @@ Análisis de caso de uso (modelo-vista-controlador):
 
 Clases relevantes para los 4 casos de uso presentados: `ThemePlugin` y `GenericPlugin` (Personalizar Plataforma), `UserImportExportPlugin` / `NativeImportExportPlugin` / `FastConverter` (Migrar Datos), `CertificadoView` / `CertificadoService` (Solicitar Certificado).
 
+*(La estructura de carpetas del proyecto y el código fuente se muestran en vivo desde el explorador del IDE durante la defensa, no como capturas aquí.)*
+
 ## Prototipos
 
 Migrar Datos y Personalizar Plataforma no requirieron diseño propio: reutilizan los módulos nativos de importación/exportación y configuración del sitio de OJS, por eso se muestran directamente en alta fidelidad. Consultar Artículos Aceptados y Solicitar Certificado sí tuvieron wireframe propio antes de implementarse.
 
-*Pendiente: las imágenes de prototipo aún no aparecen en el repositorio con nombres reconocibles para estos 4 casos de uso. Dime la carpeta/nombres cuando las subas y las enlazo.*
+*Pendiente: subir las imágenes de prototipo de estos 4 casos de uso al repositorio.*
 
 ## La plataforma en funcionamiento
 
-*Pendiente: las capturas reales de Migrar Datos, Personalizar Plataforma, Artículos Aceptados y el PDF de Certificado (capítulo 5 del TFG) no aparecen todavía en el repositorio.*
+*Pendiente: subir las capturas reales de Migrar Datos, Personalizar Plataforma, Artículos Aceptados y el PDF de Certificado (capítulo 5 del TFG).*
 
 ## Arquitectura y stack tecnológico
 
