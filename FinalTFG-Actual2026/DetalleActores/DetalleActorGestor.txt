@@ -1,0 +1,32 @@
+@startuml GestorRevista
+
+left to right direction
+skinparam actorStyle awesome
+skinparam usecaseBorderColor #1E6292
+skinparam usecaseBackgroundColor #EAF4FB
+skinparam actorBorderColor #1E6292
+
+' Herencia: Gestor extiende a Editor
+actor "Editor"           as editor
+actor "Gestor de Revista" as gestor
+
+gestor --|> editor
+
+rectangle "Sistema OJS 3.4.1" {
+
+  usecase "Publicar Número"               as UC22
+  usecase "Gestionar Usuarios"            as UC23
+  usecase "Configurar Secciones\nde Revista" as UC24
+
+}
+
+gestor --> UC22
+gestor --> UC23
+gestor --> UC24
+
+note bottom of editor
+  El Gestor hereda todos
+  los casos de uso del Editor
+end note
+
+@enduml

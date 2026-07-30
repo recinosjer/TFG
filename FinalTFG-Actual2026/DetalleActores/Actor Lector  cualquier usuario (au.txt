@@ -1,0 +1,7 @@
+Actor: Lector / cualquier usuario (autenticado o visitante)
+
+Disparador: El usuario accede a la sección de artículos aceptados desde la página principal o la barra de navegación.
+
+Flujo: El sistema recupera los artículos aceptados pendientes de asignación a número. Si el usuario no aplica ningún filtro, el sistema presenta el listado completo con el título, resumen, autores y revista de cada artículo; si no existen artículos aceptados, muestra un listado vacío. Si el usuario filtra por revista, el sistema comprueba si esa revista dispone de artículos aceptados: en caso afirmativo, presenta el listado filtrado; en caso contrario, muestra un listado vacío.
+
+Resultado: El usuario visualiza los artículos aceptados pendientes de publicación. Si no existen resultados para los criterios indicados, el sistema lo informa mostrando un listado vacío.

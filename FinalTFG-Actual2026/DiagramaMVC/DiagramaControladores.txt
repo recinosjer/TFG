@@ -1,0 +1,37 @@
+@startuml Controladores
+skinparam shadowing false
+skinparam defaultFontColor #1B1B1B
+skinparam class {
+  BackgroundColor #E9F6EA
+  BorderColor #4C8C4A
+  ArrowColor #4C8C4A
+  FontColor #1B1B1B
+}
+skinparam legend {
+  BackgroundColor #FDF6E3
+  BorderColor #A88B00
+}
+
+package "Controllers" {
+  class ThemePlugin <<control>>
+  class RegistrationHandler <<control>>
+  class GenericPlugin <<control>>
+  class LoginHandler <<control>>
+  class SubmissionHandler <<control>>
+  class ReviewerHandler <<control>>
+  class WorkflowHandler <<control>>
+  class IssueHandler <<control>>
+}
+
+legend right
+  |= Clase |= Extiende de |
+  | ThemePlugin | plugin de tema propio |
+  | RegistrationHandler | override del registro de usuarios |
+  | GenericPlugin | plugin genérico propio |
+  | LoginHandler | — (core, sin override propio) |
+  | SubmissionHandler | override del flujo de envío |
+  | ReviewerHandler | — (core, sin override propio) |
+  | WorkflowHandler | — (core, sin override propio) |
+  | IssueHandler | — (core, sin override propio) |
+endlegend
+@enduml

@@ -1,0 +1,38 @@
+@startuml AnalisisCasoUsoMigrarDatos
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam rectangle {
+  FontColor white
+  BorderColor black
+}
+
+actor "Administrador\ndel Sitio" as Admin
+
+rectangle "UserImportExportPlugin\n(OJS, CLI)" as UserPlugin #7D7D34
+rectangle "FastConverter\n(herramienta Go)" as Converter #7D7D34
+rectangle "Importar/Exportar XML\n(vista OJS)" as ImportView #4A90D9
+rectangle "NativeImportExportPlugin" as ImportPlugin #7D7D34
+rectangle "Filtros de importación\n(NativeXmlSubmissionFilter, etc.)" as Filters #C9971E
+rectangle "SubmissionDAO" as DAO #E8992B
+rectangle "UserDAO" as UserDAO #E8992B
+
+Admin -right-> UserPlugin : UserImportExportPlugin import users.xml revista
+UserPlugin -down-> UserPlugin : importUsers(xmlContent, journal)
+UserPlugin -down-> UserDAO : inserta usuarios y roles
+UserDAO -up-> Admin : usuarios y roles importados
+
+Admin -right-> Converter : fastConverter old_issue.xml new_issue.xml
+Converter -down-> Converter : readOldXmlFile(oldXmlFilePath)\nconvertOldIssueToNewIssue(oldIssue)\nwriteNewXmlFile(newXmlFilePath, newIssue)
+Converter -up-> Admin : "Guardado!"
+
+Admin -> ImportView :sube el XML convertido, confirma importación
+ImportView -down-> ImportPlugin : uploadImportXML(uploadedFile, user)
+ImportPlugin -down-> ImportPlugin : handleUpload() → temporaryFileId
+ImportPlugin -up-> ImportView : muestra pantalla de confirmación (importBounce)
+ImportView -down-> ImportPlugin : import(temporaryFileId, user)
+ImportPlugin -down-> Filters : procesa XML con la cadena de filtros
+Filters -down-> DAO : insert(submission)
+DAO -up-> Admin : confirmación de importación
+
+@enduml

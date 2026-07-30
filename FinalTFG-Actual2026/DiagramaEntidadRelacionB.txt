@@ -1,0 +1,284 @@
+@startuml DiagramaER_UsuariosRevistas
+left to right direction
+
+skinparam entity {
+  BackgroundColor #F0F0F0
+  BorderColor #555555
+  FontSize 10
+}
+skinparam entity<<ref>> {
+  BackgroundColor #FFFFFF
+  BorderColor #999999
+  BorderStyle dashed
+  FontColor #777777
+}
+skinparam arrowColor #444444
+skinparam legend {
+  BackgroundColor #FDF6E3
+  BorderColor #A88B00
+}
+
+entity "journals" as J {
+  * journal_id       : BIGINT       <<PK>>
+  --
+  path               : VARCHAR(32)
+  seq                : DOUBLE(8,2)
+  primary_locale     : VARCHAR(14)
+  enabled            : SMALLINT(6)  <<bool>>
+  current_issue_id   : BIGINT       <<FK, nullable>>
+}
+
+entity "sections" as S {
+  * section_id        : BIGINT      <<PK>>
+  --
+  journal_id          : BIGINT      <<FK>>
+  seq                 : DOUBLE(8,2)
+  editor_restricted   : SMALLINT(6) <<bool>>
+  meta_reviewed       : SMALLINT(6) <<bool>>
+}
+
+entity "issues" as IS {
+  * issue_id       : BIGINT         <<PK>>
+  --
+  journal_id        : BIGINT        <<FK>>
+  volume            : SMALLINT(6)
+  number            : VARCHAR(40)
+  year              : SMALLINT(6)
+  published         : SMALLINT(6)   <<bool>>
+  date_published    : DATETIME
+}@startuml DiagramaER_FlujoEditorial
+left to right direction
+
+skinparam entity {
+  BackgroundColor #F0F0F0
+  BorderColor #555555
+  FontSize 10
+}
+skinparam entity<<ref>> {
+  BackgroundColor #FFFFFF
+  BorderColor #999999
+  BorderStyle dashed
+  FontColor #777777
+}
+skinparam arrowColor #444444
+skinparam legend {
+  BackgroundColor #FDF6E3
+  BorderColor #A88B00
+}
+
+entity "journals (ref)" as Jref <<ref>> {
+  * journal_id : BIGINT <<PK>>
+  --
+  ver Fig. 52a
+}
+
+entity "sections (ref)" as Sref <<ref>> {
+  * section_id : BIGINT <<PK>>
+  --
+  ver Fig. 52a
+}
+
+entity "users (ref)" as Uref <<ref>> {
+  * user_id : BIGINT <<PK>>
+  --
+  ver Fig. 52a
+}
+
+entity "authors (ref)" as Aref <<ref>> {
+  * author_id : BIGINT <<PK>>
+  --
+  ver Fig. 52a
+}
+
+entity "submissions" as SUB {
+  * submission_id           : BIGINT <<PK>>
+  --
+  context_id                : BIGINT <<FK>>
+  current_publication_id    : BIGINT <<FK, nullable>>
+  stage_id                  : BIGINT
+  status                    : SMALLINT(6)
+  date_submitted            : DATETIME
+}
+
+note bottom of SUB
+  status = 1  QUEUED
+  status = 3  PUBLISHED
+  status = 4  DECLINED
+  status = 5  SCHEDULED
+  (constantes de PKPSubmission.php; el mismo
+  enum se reutiliza en publications.status)
+end note
+
+entity "publications" as PUB {
+  * publication_id     : BIGINT     <<PK>>
+  --
+  submission_id         : BIGINT    <<FK>>
+  section_id            : BIGINT    <<FK, nullable>>
+  primary_contact_id    : BIGINT    <<FK -> authors, nullable>>
+  status                : SMALLINT(6)
+  date_published        : DATE
+  version                : BIGINT
+}
+
+note bottom of PUB
+  "Artículo Aceptado" = status=3 (PUBLISHED)
+  SIN fila issueId en publication_settings
+  para este publication_id. No existe columna
+  ni tabla propia: es un estado calculado.
+end note
+
+entity "files" as FI {
+  * file_id   : BIGINT UNSIGNED     <<PK>>
+  --
+  path         : VARCHAR(255)
+  mimetype     : VARCHAR(255)
+}
+
+entity "submission_files" as SF {
+  * submission_file_id : BIGINT UNSIGNED <<PK>>
+  --
+  submission_id          : BIGINT   <<FK>>
+  file_id                 : BIGINT UNSIGNED <<FK -> files>>
+  uploader_user_id        : BIGINT  <<FK, nullable>>
+  file_stage              : BIGINT
+}
+
+entity "publication_galleys" as G {
+  * galley_id        : BIGINT       <<PK>>
+  --
+  publication_id       : BIGINT     <<FK>>
+  submission_file_id    : BIGINT UNSIGNED <<FK, nullable>>
+  locale                : VARCHAR(14)
+  label                 : VARCHAR(255)
+  is_approved           : SMALLINT(6) <<bool>>
+}
+
+entity "review_rounds" as RR {
+  * review_round_id : BIGINT        <<PK>>
+  --
+  submission_id       : BIGINT      <<FK>>
+  stage_id            : BIGINT
+  round               : SMALLINT(6)
+  status              : BIGINT
+}
+
+entity "review_assignments" as RA {
+  * review_id      : BIGINT         <<PK>>
+  --
+  submission_id      : BIGINT       <<FK>>
+  reviewer_id         : BIGINT      <<FK -> users>>
+  review_round_id      : BIGINT     <<FK>>
+  stage_id             : SMALLINT(6)
+  declined             : SMALLINT(6) <<bool>>
+  date_assigned        : DATETIME
+  date_due             : DATETIME
+}
+
+entity "edit_decisions" as ED {
+  * edit_decision_id : BIGINT       <<PK>>
+  --
+  submission_id        : BIGINT     <<FK>>
+  editor_id             : BIGINT    <<FK -> users>>
+  review_round_id       : BIGINT    <<FK, nullable>>
+  decision              : SMALLINT(6)
+  date_decided          : DATETIME
+}
+
+Jref ||--o{ SUB  : "recibe"
+Sref ..o{  PUB   : "categoriza"
+
+SUB ||--o{ PUB  : "versiona"
+PUB ..o|  SUB   : "publicación vigente\n(current_publication_id)"
+SUB ||--o{ SF   : "adjunta"
+SUB ||--o{ RR   : "tiene"
+SUB ||--o{ RA   : "asignado"
+SUB ||--o{ ED   : "registra"
+
+PUB ||--o{ Aref : "escrito por"
+Aref ..o{  PUB  : "contacto principal\n(primary_contact_id)"
+PUB ||--o{ G    : "formateado"
+
+FI  ||--o{ SF   : "es archivo de"
+SF  ||--o{ G    : "referenciado"
+
+RR  ||--o{ RA   : "contiene"
+RR  ||--o{ ED   : "vinculado"
+
+Uref ||--o{ RA  : "revisa"
+Uref ||--o{ ED  : "decide"
+Uref ||--o{ SF  : "sube"
+
+legend right
+  |= Nota |= Explicación |
+  | issues--publications | No existe FK directa. La asignación de un Articulo a un Numero se hace vía publication_settings (setting_name='issueId'), tabla EAV genérica no incluida en este ERD. |
+  | file_size | No se persiste en BD: se calcula en tiempo de ejecución con stat() sobre el archivo en disco. |
+  | (ref) | Entidad detallada por completo en la Fig. 52a — aquí solo se muestra su clave primaria para trazar la relación. |
+endlegend
+@enduml
+
+
+entity "users" as U {
+  * user_id         : BIGINT        <<PK>>
+  --
+  username          : VARCHAR(32)
+  email             : VARCHAR(255)
+  disabled          : SMALLINT(6)   <<bool>>
+  date_registered   : DATETIME
+}
+
+entity "user_groups" as UG {
+  * user_group_id   : BIGINT        <<PK>>
+  --
+  context_id        : BIGINT        <<FK*, sin constraint>>
+  role_id           : BIGINT
+  is_default        : SMALLINT(6)   <<bool>>
+}
+
+entity "user_user_groups" as UUG {
+  * user_user_group_id : BIGINT     <<PK>>
+  --
+  user_id           : BIGINT        <<FK>>
+  user_group_id     : BIGINT        <<FK>>
+}
+
+entity "authors" as A {
+  * author_id       : BIGINT        <<PK>>
+  --
+  publication_id     : BIGINT       <<FK, ver Fig. 52b>>
+  user_group_id       : BIGINT      <<FK, nullable>>
+  email               : VARCHAR(90)
+  seq                 : DOUBLE(8,2)
+}
+
+entity "submissions (ref)" as SUBref <<ref>> {
+  * submission_id : BIGINT <<PK>>
+  --
+  ver Fig. 52b
+}
+
+entity "publications (ref)" as PUBref <<ref>> {
+  * publication_id : BIGINT <<PK>>
+  --
+  ver Fig. 52b
+}
+
+J   ||--o{ S      : "tiene"
+J   ||--o{ IS     : "publica"
+J   ..o{  UG      : "define\n(*sin FK declarada)"
+J   ..o|  IS      : "número actual\n(current_issue_id)"
+J   ||--o{ SUBref : "recibe"
+
+U   ||--o{ UUG    : " "
+UG  ||--o{ UUG    : " "
+UG  ||--o{ A      : "rol de"
+
+S   ..o{  PUBref  : "categoriza"
+A   ..o{  PUBref  : "escrito por /\ncontacto principal"
+
+legend right
+  |= Nota |= Explicación |
+  | (*) UG--J | user_groups.context_id no tiene FK declarada en el esquema (columna genérica reutilizada por OJS/OMP), pero es la relación lógica real. |
+  | smallint(6) | OJS usa smallint(6) como booleano por convención (0/1); se etiqueta <<bool>> para claridad. |
+  | (ref) | Entidad detallada por completo en la Fig. 52b — aquí solo se muestra su clave primaria para trazar la relación. |
+endlegend
+@enduml

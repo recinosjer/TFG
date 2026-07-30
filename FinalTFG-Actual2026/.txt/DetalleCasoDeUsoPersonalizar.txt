@@ -1,0 +1,23 @@
+@startuml
+skinparam backgroundColor white
+skinparam activity {
+  BackgroundColor #FFF6E5
+  BorderColor #D4B896
+  ArrowColor #2E7D32
+  DiamondBackgroundColor white
+  DiamondBorderColor black
+  StartColor black
+  EndColor black
+  FontColor black
+}
+skinparam roundcorner 15
+skinparam shadowing false
+
+start
+:Activar Plugin de Tema\n(identidad visual y experiencia de usuario de la plataforma);
+:Activar Plugin Genérico\n(artículos aceptados, estadísticas, anuncios);
+:Desplegar microservicio de certificados;
+:Configurar parámetros de cada componente\ndesde el panel de administración;
+:Plataforma personalizada sin modificar\nel núcleo de OJS;
+stop
+@enduml

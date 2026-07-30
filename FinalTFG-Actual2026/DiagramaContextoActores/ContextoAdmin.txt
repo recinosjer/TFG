@@ -1,0 +1,34 @@
+@startuml ContextoAdmin
+skinparam state {
+  BackgroundColor #F8F8F8
+  BorderColor #555555
+  FontSize 11
+}
+skinparam ArrowColor #555555
+
+state "Administrador\n(No autenticado)" as noauth
+state "Administrador\n(Autenticado)"    as auth
+state "Dashboard"                       as dash
+state "Listando Plugins"                as plugins
+state "Listando Idiomas"                as idiomas
+state "Migrando Datos"                  as migracion
+state "Listando Revistas"               as revistas
+state "Listando Usuarios"               as usuarios
+state "Listando Roles"                  as roles
+
+noauth    --> auth      : Login
+auth      --> noauth    : Logout
+auth      --> dash      : List dashboard Information
+dash      --> plugins   : Gestionar plugins
+plugins   --> plugins   : Activar / Desactivar\nConfigurar plugin
+dash      --> idiomas   : Gestionar idiomas
+idiomas   --> idiomas   : Instalar idioma\nEstablecer por defecto
+dash      --> migracion : Migrar datos
+migracion --> migracion : Ejecutar migración\nVerificar integridad\nVer logs
+dash      --> revistas  : Gestionar revistas
+revistas  --> revistas  : Crear revista\nAsignar gestor
+dash      --> usuarios  : Gestionar usuarios
+usuarios  --> usuarios  : Crear usuario\nEditar usuario\nEliminar usuario
+dash      --> roles     : Asignar roles
+roles     --> roles     : Asignar Admin de Sitio\nRevocar privilegios
+@enduml

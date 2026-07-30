@@ -1,0 +1,31 @@
+@startuml ContextoRevisor
+skinparam state {
+  BackgroundColor #F8F8F8
+  BorderColor #555555
+  FontSize 11
+}
+skinparam ArrowColor #555555
+
+state "Revisor\n(No autenticado)" as noauth
+state "Revisor\n(Autenticado)"    as auth
+state "Panel de Revisión"         as panel
+state "Listando Solicitudes"      as solicitudes
+state "Revisando Artículo"        as activa
+state "Listando Artículos"        as articulos
+state "Consultando Estadísticas"  as stats
+state "Consultando Certificados"  as cert
+
+noauth      --> auth        : Login / Registro
+auth        --> noauth      : Logout
+auth        --> panel       : Cargar panel
+panel       --> solicitudes : Ver solicitudes
+solicitudes --> solicitudes : Rechazar solicitud
+solicitudes --> activa      : Aceptar solicitud
+activa      --> activa      : Leer manuscrito\nEnviar informe\nRecomendar decisión
+panel       --> articulos   : Ver artículos
+articulos   --> articulos   : Descargar PDF
+panel       --> stats       : Ver estadísticas
+panel       --> cert        : Buscar certificado
+cert        --> cert        : Descargar certificado
+@enduml
+

@@ -1,0 +1,47 @@
+@startuml DiagramaEstadoEnvio
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam state {
+  BackgroundColor #E9F6EA
+  BorderColor #4C8C4A
+  ArrowColor #4C8C4A
+  FontColor #1B1B1B
+}
+skinparam note {
+  BackgroundColor #FDF6E3
+  BorderColor #A88B00
+}
+
+title Diagrama de Estado del Envío
+
+' --- Camino principal (de arriba a abajo) ---
+[*] --> Borrador : Autor inicia envío
+Borrador --> Enviado : Autor confirma y envía
+Enviado --> EnRevision : Editor asigna revisores
+EnRevision --> RevisionSolicitada : Revisores entregan evaluación
+RevisionSolicitada --> Aceptado : Editor decide aceptar
+note left of Aceptado
+  El artículo aparece en
+  el listado de Artículos
+  Aceptados (status = 3)
+end note
+Aceptado --> EnProduccion : Asistente prepara galeradas
+EnProduccion --> Programado : Asignado a un Número
+Programado --> Publicado : Número publicado
+Publicado --> [*]
+
+' --- Ramas laterales ---
+RevisionSolicitada --> Rechazado : Editor decide rechazar
+Rechazado --> [*]
+
+RevisionSolicitada --> CambiosSolicitados : Editor solicita cambios al autor
+note right of CambiosSolicitados
+  El autor recibe feedback
+  del editor y trabaja
+  en la versión revisada
+end note
+CambiosSolicitados --> RevisionSolicitada : Autor envía versión revisada
+
+EnRevision --> Enviado : Editor reasigna revisores
+
+@enduml

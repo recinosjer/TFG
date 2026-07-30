@@ -1,0 +1,46 @@
+@startuml Modelos
+hide empty members
+
+skinparam class {
+  BackgroundColor #F0F0F0
+  BorderColor #666666
+  FontSize 11
+}
+skinparam packageBorderColor #333333
+skinparam packageBackgroundColor #FAFAFA
+
+package "Models" {
+  class "Submission"        << (E,#80C080) >>
+  class "Publication"       << (E,#80C080) >>
+  class "Author"            << (E,#80C080) >>
+  class "User"              << (E,#80C080) >>
+
+  class "Journal"           << (E,#80C080) >>
+  class "Issue"             << (E,#80C080) >>
+  class "Section"           << (E,#80C080) >>
+  class "Galley"            << (E,#80C080) >>
+
+  class "SubmissionFile"    << (E,#80C080) >>
+  class "ReviewAssignment"  << (E,#80C080) >>
+  class "ReviewRound"       << (E,#80C080) >>
+  class "UserGroup"         << (E,#80C080) >>
+
+  class "ArticuloAceptado"  << (E,#80C080) >>
+}
+
+Submission       -[hidden]r- Publication
+Publication      -[hidden]r- Author
+Author           -[hidden]r- User
+
+Journal          -[hidden]r- Issue
+Issue            -[hidden]r- Section
+Section          -[hidden]r- Galley
+
+SubmissionFile   -[hidden]r- ReviewAssignment
+ReviewAssignment -[hidden]r- ReviewRound
+ReviewRound      -[hidden]r- UserGroup
+
+Submission       -[hidden]d- Journal
+Journal          -[hidden]d- SubmissionFile
+SubmissionFile   -[hidden]d- ArticuloAceptado
+@enduml

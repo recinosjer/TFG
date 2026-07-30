@@ -1,0 +1,27 @@
+@startuml ContextoLector
+skinparam state {
+  BackgroundColor #F8F8F8
+  BorderColor #555555
+  FontSize 11
+}
+skinparam ArrowColor #555555
+
+state "Lector\n(No autenticado)" as noauth
+state "Lector\n(Autenticado)"    as auth
+state "Inicio"                   as home
+state "Listando Artículos"       as articulos
+state "Consultando Estadísticas" as stats
+state "Consultando Certificados" as cert
+state "Cambiando Idioma"         as idioma
+
+noauth    --> auth      : Login / Registro
+auth      --> noauth    : Logout
+auth      --> home      : Cargar inicio
+home      --> articulos : Ver artículos
+articulos --> articulos : Descargar PDF
+home      --> stats     : Ver estadísticas
+home      --> cert      : Buscar certificado
+cert      --> cert      : Descargar certificado
+home      --> idioma    : Cambiar idioma
+idioma    --> idioma    : Seleccionaando idioma
+@enduml

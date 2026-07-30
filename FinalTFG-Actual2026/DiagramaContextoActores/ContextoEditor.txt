@@ -1,0 +1,31 @@
+@startuml ContextoEditor
+skinparam state {
+  BackgroundColor #F8F8F8
+  BorderColor #555555
+  FontSize 11
+}
+skinparam ArrowColor #555555
+
+state "Editor\n(No autenticado)" as noauth
+state "Editor\n(Autenticado)"    as auth
+state "Panel Editorial"          as panel
+state "Listando Envíos"          as envios
+state "Gestionando Revisión"     as enrevision
+state "Editando Copia"           as copia
+state "Gestionando Galeradas"    as galeradas
+state "Listando Artículos"       as articulos
+
+noauth     --> auth        : Login / Registro
+auth       --> noauth      : Logout
+auth       --> panel       : Cargar panel
+panel      --> envios      : Ver envíos asignados
+envios     --> envios      : Asignar revisor
+envios     --> enrevision  : Abrir revisión
+enrevision --> enrevision  : Ver informes\nTomar decisión
+enrevision --> copia       : Aceptar envío
+copia      --> copia       : Revisar y corregir texto
+copia      --> galeradas   : Enviar a producción
+galeradas  --> galeradas   : Subir galerada\nPublicar galerada
+panel      --> articulos   : Ver artículos
+articulos  --> articulos   : Descargar PDF
+@enduml

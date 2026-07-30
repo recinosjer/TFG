@@ -1,0 +1,39 @@
+@startuml
+left to right direction
+skinparam usecase {
+  BackgroundColor #F2F2F2
+  BorderColor black
+}
+skinparam actor {
+  BorderColor black
+}
+skinparam ArrowColor black
+skinparam shadowing false
+
+actor Lector
+actor Autor
+actor Revisor
+actor Editor
+actor "Gestor de Revista" as Gestor
+actor "Administrador del Sitio" as Admin
+
+Autor --|> Lector
+Revisor --|> Lector
+Editor --|> Lector
+Gestor --|> Editor
+Admin --|> Gestor
+
+rectangle "Módulo Acceso" {
+  usecase "Registrarse" as UC1
+  usecase "Iniciar Sesión" as UC2
+  usecase "Cerrar Sesión" as UC3
+  usecase "Recuperar Contraseña" as UC4
+  usecase "Cambiar Idioma" as UC5
+}
+
+Lector --> UC1
+Lector --> UC2
+Lector --> UC3
+Lector --> UC4
+Lector --> UC5
+@enduml

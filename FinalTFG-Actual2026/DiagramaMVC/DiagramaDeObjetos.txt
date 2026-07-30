@@ -1,0 +1,159 @@
+@startuml
+skinparam shadowing false
+skinparam defaultFontColor #1B1B1B
+skinparam object {
+  BackgroundColor #E9F6EA
+  BorderColor #4C8C4A
+  ArrowColor #4C8C4A
+  FontColor #1B1B1B
+}
+
+object "garcia : Usuario" as garcia {
+  id = 88
+  username = "jgarcia"
+  email = "j.garcia@univ.es"
+  nombre = "José García"
+}
+
+object "plataforma : Plataforma" as plataforma {
+  version = "3.4.0.1"
+  urlBase = "https://journals.example.com"
+  localeDefecto = "es"
+}
+
+object "tecEdu : Revista" as tecEdu {
+  id = 3
+  ruta = ""
+  nombre = "Revista Iberoamericana de Educación Digital"
+  issn = "2603-0000"
+  activa = true
+}
+
+object "rolAutor : GrupoUsuario" as rolAutor {
+  id = 14
+  rol = "Autor"
+}
+
+object "autor_garcia : Autor" as autor_garcia {
+  afiliacion = "Universidad de Sevilla"
+  pais = "ES"
+  orcid = "0000-0001-2345-6789"
+}
+
+object "editor_lopez : Editor" as editor_lopez {
+  tipo = "Editor de Sección"
+  seccionAsignada = "Artículos Originales"
+}
+
+object "revisor_mora : Revisor" as revisor_mora {
+  disponible = true
+  especialidad = "Educación virtual"
+}
+
+object "gestor_ruiz : Gestor" as gestor_ruiz {
+  cargo = "Gestor de Revista"
+}
+
+object "vol8 : Volumen" as vol8 {
+  id = 12
+  volumen = 8
+  anio = 2024
+}
+
+object "stat1201 : Estadistica" as stat1201 {
+  tipo = "descargas"
+  totalDescargas = 142
+  totalVistas = 389
+  fecha = "2024-04-01"
+}
+
+object "cert2024 : Certificado" as cert2024 {
+  dniNie = "12345678A"
+  anio = 2024
+  rol = "Autor"
+  nombreRevista = "Revista Iberoamericana de Educación Digital"
+}
+
+object "env1201 : Envio" as env1201 {
+  id = 1201
+  fechaEnvio = "2024-01-15"
+  ronda = 2
+}
+
+object "rev1 : Revision" as rev1 {
+  id = 9
+  ronda = 2
+  recomendacion = "aceptar"
+  fechaCompletado = "2024-02-20"
+}
+
+object "num1 : Numero" as num1 {
+  id = 42
+  numero = 1
+  publicado = false
+  fechaPublicacion = "2024-06-01"
+}
+
+object "art1201 : Articulo" as art1201 {
+  id = 1201
+  titulo = "Aprendizaje activo en entornos virtuales"
+  estado = "publicado"
+  locale = "es"
+  fechaEnvio = "2024-01-15"
+}
+
+object "pdf_art1201 : Galera" as pdf_art1201 {
+  id = 55
+  urlPath = "PDF"
+  tipo = "application/pdf"
+}
+
+object "env1305 : Envio" as env1305 {
+  id = 1305
+  fechaEnvio = "2024-06-01"
+  ronda = 1
+}
+
+object "art1305 : Articulo" as art1305 {
+  id = 1305
+  titulo = "Implementación de arquitectura zero-trust en entornos distribuidos nativos en la nube"
+  estado = "aceptado"
+  locale = "es"
+  fechaEnvio = "2024-06-01"
+}
+
+object "art1305Acept : ArticuloAceptado" as art1305Acept {
+  publicationId = 43
+  titulo = "Implementación de arquitectura zero-trust en entornos distribuidos nativos en la nube"
+  acronimoRevista = "cyberEd"
+  fechaPublicacion = "2024-06-15"
+}
+
+plataforma --> tecEdu : contiene
+tecEdu --> vol8 : publica
+tecEdu --> stat1201 : registra
+tecEdu --> cert2024 : emite
+garcia --> cert2024 : solicita
+garcia --> rolAutor : asignado a
+rolAutor --> autor_garcia : define
+autor_garcia --> env1201 : realiza
+editor_lopez --> env1201 : gestiona
+revisor_mora --> rev1 : realiza
+env1201 --> rev1 : es evaluado por
+vol8 --> num1 : contiene
+gestor_ruiz --> num1 : gestiona
+num1 --> art1201 : agrupa
+env1201 --> art1201 : genera
+art1201 --> pdf_art1201 : disponible en
+
+autor_garcia --> env1305 : realiza
+env1305 --> art1305 : genera
+art1305 --> art1305Acept : pasa a
+
+note right of env1201
+  Las relaciones mostradas no implican
+  orden temporal entre sí: es un estado
+  final de las instancias, no una secuencia
+  de pasos.
+end note
+@enduml

@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor white
+skinparam activity {
+  BackgroundColor #FFF6E5
+  BorderColor #D4B896
+  ArrowColor #2E7D32
+  DiamondBackgroundColor white
+  DiamondBorderColor black
+  StartColor black
+  EndColor black
+  FontColor black
+}
+skinparam roundcorner 15
+skinparam shadowing false
+
+start
+:Realizar copia de seguridad completa\n(base de datos + ficheros);
+:Exportar usuarios y roles\nmediante herramienta nativa de OJS;
+:Importar usuarios y roles en la nueva instalación\n(automático, sin transformar estructura);
+:Exportar números y artículos\nen XML nativo de OJS 3.1;
+:Ejecutar herramienta de conversión\n(transforma la estructura de los datos al nuevo formato);
+if (¿Conversión exitosa?) then (No)
+  :Mostrar error;
+  :Detener proceso sin alterar\nlos datos ya migrados;
+  stop
+else (Sí)
+  :Importar XML convertido en OJS 3.4.1\n(crea/empareja autores por email automáticamente);
+  :Configurar manualmente contenidos no estructurados\n(equipo editorial, avisos, menús de navegación);
+  :Verificar integridad de los datos migrados;
+  :Revisar logs del proceso;
+  stop
+endif
+@enduml	

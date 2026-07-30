@@ -1,0 +1,35 @@
+@startuml
+skinparam state {
+  BackgroundColor #d5e8d4
+  BorderColor #82b366
+  FontColor black
+  ArrowColor #333333
+}
+skinparam note {
+  BackgroundColor #fff2cc
+  BorderColor #d6b656
+}
+
+title Diagrama de Estado del Registro de Usuario
+
+[*] --> Registrado : Usuario completa el formulario\ny selecciona rol por revista
+
+note right of Registrado
+  El usuario elige Lector/a o Autor/a
+  para cada revista al registrarse
+end note
+
+Registrado --> Activo : Sistema confirma\nel registro
+
+state Activo {
+  [*] --> RolSeleccionado
+  RolSeleccionado --> RolAmpliado : Gestor asigna\nrol adicional
+  RolAmpliado --> RolSeleccionado : Gestor revoca\nroles adicionales
+  RolAmpliado --> RolAmpliado : Gestor modifica\nroles asignados
+}
+
+Activo --> Deshabilitado : Administrador\ndeshabilita la cuenta
+Deshabilitado --> Activo : Administrador\nrehabilita la cuenta
+Deshabilitado --> [*] : Administrador\nelimina la cuenta
+
+@enduml

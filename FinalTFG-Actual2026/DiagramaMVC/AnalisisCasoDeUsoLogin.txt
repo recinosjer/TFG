@@ -1,0 +1,27 @@
+@startuml AnalisisCasoUsoLogin
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam rectangle {
+  FontColor white
+  BorderColor black
+}
+
+actor user
+
+rectangle ":CollaborationDashboard" as Dashboard #90C978
+rectangle "LoginView" as View #4A90D9
+rectangle "LoginHandler" as Handler #7D7D34
+rectangle "Validation" as Val #C9971E
+rectangle "SessionManager" as Session #E8992B
+rectangle "UserRepository" as UserRepo #E8992B
+
+user -down-> View : login(username, password)
+View -down-> Handler : signIn(username, password)
+Handler -down-> Val : login(username, password,\nreason, remember)
+Val -down-> UserRepo : getByUsername(username)
+Val .down.> Session : registerUserSession(user,\nreason, remember)
+Handler -up-> View : openDashboard(session)
+View -up-> Dashboard
+
+@enduml

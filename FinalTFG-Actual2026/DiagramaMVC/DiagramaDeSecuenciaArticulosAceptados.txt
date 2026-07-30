@@ -1,0 +1,49 @@
+@startuml DiagramaSecuenciaConsultarArticulosAceptados
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #4C8C4A
+  ActorBorderColor #4C8C4A
+  LifeLineBorderColor #4C8C4A
+  ParticipantBorderColor #4C8C4A
+  ParticipantBackgroundColor #E9F6EA
+  DatabaseBorderColor #4C8C4A
+  DatabaseBackgroundColor #E9F6EA
+}
+
+title Diagrama de Secuencia - Consultar Artículos Aceptados
+
+actor Lector
+participant "Página Artículos\nAceptados" as Pagina
+participant "Sistema OJS" as OJS
+database "Base de Datos" as BD
+
+Lector -> Pagina: Solicita consultar\nartículos aceptados
+Pagina -> OJS: Solicita listado de artículos aceptados
+OJS -> BD: Consulta publicaciones\ncon status = 3 (Sin IssueId)
+BD --> OJS: Devuelve listado de publicaciones
+
+alt Existen artículos aceptados
+    OJS --> Pagina: Devuelve listado con título,\nresumen, autores y revista
+    Pagina --> Lector: Presenta listado completo
+
+    opt Lector filtra por revista
+        Lector -> Pagina: Selecciona una revista
+        Pagina -> OJS: Solicita filtrar por ruta de revista
+        OJS -> BD: Verifica ruta de revista
+
+        alt Revista existe
+            BD --> OJS: Devuelve artículos de la revista
+            OJS --> Pagina: Devuelve listado filtrado
+            Pagina --> Lector: Presenta listado filtrado
+        else Revista no existe
+            OJS --> Pagina: Devuelve listado vacío
+            Pagina --> Lector: Presenta listado vacío
+        end
+    end
+else No hay artículos aceptados
+    OJS --> Pagina: Devuelve listado vacío
+    Pagina --> Lector: Presenta listado vacío
+end
+
+@enduml

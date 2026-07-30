@@ -1,0 +1,47 @@
+@startuml
+hide empty description
+skinparam shadowing false
+skinparam nodesep 45
+skinparam ranksep 55
+skinparam ArrowColor Black
+skinparam state {
+  BackgroundColor White
+  BorderColor Black
+  FontColor Black
+}
+
+state "Administrador\n(No autenticado)" as NoAuth
+state "Administrador\n(Autenticado)" as Auth
+state Dashboard
+
+state "Listando Plugins" as Plugins
+state "Listando Idiomas" as Idiomas
+state "Listando Revistas" as Revistas
+state "Listando Roles" as Roles
+state "Migrando Datos" as Migrando
+state "Personalizando Plataforma" as Personalizando
+state "Listando Usuarios" as Usuarios
+
+NoAuth -down-> Auth : Login
+Auth -up-> NoAuth : Logout
+Auth -down-> Dashboard : Cargar dashboard
+
+' Fila 1: cuatro ramas cortas
+Dashboard --> Plugins : Gestionar\nplugins
+Dashboard --> Idiomas : Gestionar\nidiomas
+Dashboard --> Revistas : Gestionar\nrevistas
+Dashboard --> Roles : Asignar\nroles
+
+' Fila 2: tres ramas, la más larga centrada
+Dashboard ---> Migrando : Migrar\ndatos
+Dashboard ---> Personalizando : Personalizar\nplataforma
+Dashboard ---> Usuarios : Gestionar\nusuarios
+
+Plugins --> Plugins : Activar / Desactivar\nConfigurar plugin
+Idiomas --> Idiomas : Instalar idioma\nEstablecer por defecto
+Revistas --> Revistas : Crear revista\nAsignar gestor
+Roles --> Roles : Asignar rol en cualquier revista\n(Autor, Revisor, Editor, etc.)\nAsignar Admin de Sitio\nRevocar privilegios
+Migrando --> Migrando : Ejecutar migración\nVerificar integridad\nVer logs
+Personalizando --> Personalizando : Activar tema\nActivar plugin genérico\nDesplegar microservicio certificados\nConfigurar parámetros
+Usuarios --> Usuarios : Crear usuario\nEditar usuario\nEliminar usuario
+@enduml

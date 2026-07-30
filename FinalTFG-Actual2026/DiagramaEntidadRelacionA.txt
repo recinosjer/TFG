@@ -1,0 +1,115 @@
+@startuml DiagramaER_UsuariosRevistas
+left to right direction
+
+skinparam entity {
+  BackgroundColor #F0F0F0
+  BorderColor #555555
+  FontSize 10
+}
+skinparam entity<<ref>> {
+  BackgroundColor #FFFFFF
+  BorderColor #999999
+  BorderStyle dashed
+  FontColor #777777
+}
+skinparam arrowColor #444444
+skinparam legend {
+  BackgroundColor #FDF6E3
+  BorderColor #A88B00
+}
+
+entity "journals" as J {
+  * journal_id       : BIGINT       <<PK>>
+  --
+  path               : VARCHAR(32)
+  seq                : DOUBLE(8,2)
+  primary_locale     : VARCHAR(14)
+  enabled            : SMALLINT(6)  <<bool>>
+  current_issue_id   : BIGINT       <<FK, nullable>>
+}
+
+entity "sections" as S {
+  * section_id        : BIGINT      <<PK>>
+  --
+  journal_id          : BIGINT      <<FK>>
+  seq                 : DOUBLE(8,2)
+  editor_restricted   : SMALLINT(6) <<bool>>
+  meta_reviewed       : SMALLINT(6) <<bool>>
+}
+
+entity "issues" as IS {
+  * issue_id       : BIGINT         <<PK>>
+  --
+  journal_id        : BIGINT        <<FK>>
+  volume            : SMALLINT(6)
+  number            : VARCHAR(40)
+  year              : SMALLINT(6)
+  published         : SMALLINT(6)   <<bool>>
+  date_published    : DATETIME
+}
+
+entity "users" as U {
+  * user_id         : BIGINT        <<PK>>
+  --
+  username          : VARCHAR(32)
+  email             : VARCHAR(255)
+  disabled          : SMALLINT(6)   <<bool>>
+  date_registered   : DATETIME
+}
+
+entity "user_groups" as UG {
+  * user_group_id   : BIGINT        <<PK>>
+  --
+  context_id        : BIGINT        <<FK*, sin constraint>>
+  role_id           : BIGINT
+  is_default        : SMALLINT(6)   <<bool>>
+}
+
+entity "user_user_groups" as UUG {
+  * user_user_group_id : BIGINT     <<PK>>
+  --
+  user_id           : BIGINT        <<FK>>
+  user_group_id     : BIGINT        <<FK>>
+}
+
+entity "authors" as A {
+  * author_id       : BIGINT        <<PK>>
+  --
+  publication_id     : BIGINT       <<FK, ver Fig. 52b>>
+  user_group_id       : BIGINT      <<FK, nullable>>
+  email               : VARCHAR(90)
+  seq                 : DOUBLE(8,2)
+}
+
+entity "submissions (ref)" as SUBref <<ref>> {
+  * submission_id : BIGINT <<PK>>
+  --
+  ver Fig. 52b
+}
+
+entity "publications (ref)" as PUBref <<ref>> {
+  * publication_id : BIGINT <<PK>>
+  --
+  ver Fig. 52b
+}
+
+J   ||--o{ S      : "tiene"
+J   ||--o{ IS     : "publica"
+J   ..o{  UG      : "define\n(*sin FK declarada)"
+J   ..o|  IS      : "número actual\n(current_issue_id)"
+J   ||--o{ SUBref : "recibe"
+
+U   ||--o{ UUG    : " "
+UG  ||--o{ UUG    : " "
+UG  ||--o{ A      : "rol de"
+
+S   ..o{  PUBref  : "categoriza"
+A   ..o{  PUBref  : "escrito por /\ncontacto principal"
+
+legend right
+  |= Nota |= Explicación |
+  | (*) UG--J | user_groups.context_id no tiene FK declarada en el esquema (columna genérica reutilizada por OJS/OMP), pero es la relación lógica real. |
+  | smallint(6) | OJS usa smallint(6) como booleano por convención (0/1); se etiqueta <<bool>> para claridad. |
+  | (ref) | Entidad detallada por completo en la Fig. 52b — aquí solo se muestra su clave primaria para trazar la relación. |
+endlegend
+@enduml

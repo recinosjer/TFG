@@ -1,0 +1,183 @@
+@startuml DiagramaER
+left to right direction
+
+skinparam entity {
+  BackgroundColor #F0F0F0
+  BorderColor #555555
+  FontSize 10
+}
+skinparam arrowColor #444444
+
+entity "journals" as J {
+  * journal_id    : INT          <<PK>>
+  --
+  path            : VARCHAR(32)
+  primary_locale  : VARCHAR(14)
+  enabled         : BOOLEAN
+}
+
+entity "users" as U {
+  * user_id       : INT          <<PK>>
+  --
+  username        : VARCHAR(32)
+  email           : VARCHAR(90)
+  disabled        : BOOLEAN
+  date_registered : DATETIME
+}
+
+entity "user_groups" as UG {
+  * user_group_id : INT          <<PK>>
+  --
+  * context_id    : INT          <<FK>>
+  role_id         : INT
+  is_default      : BOOLEAN
+}
+
+entity "user_user_groups" as UUG {
+  * user_id       : INT          <<FK>>
+  * user_group_id : INT          <<FK>>
+  --
+  date_start      : DATETIME
+  date_end        : DATETIME
+}
+
+entity "sections" as S {
+  * section_id      : INT        <<PK>>
+  --
+  * journal_id      : INT        <<FK>>
+  seq               : FLOAT
+  editor_restricted : BOOLEAN
+  meta_reviewed     : BOOLEAN
+}
+
+entity "issues" as IS {
+  * issue_id      : INT          <<PK>>
+  --
+  * journal_id    : INT          <<FK>>
+  volume          : INT
+  number          : VARCHAR(40)
+  year            : INT
+  published       : BOOLEAN
+  date_published  : DATETIME
+}
+
+entity "submissions" as SUB {
+  * submission_id          : INT <<PK>>
+  --
+  * context_id             : INT <<FK>>
+  * current_publication_id : INT <<FK>>
+  stage_id                 : INT
+  status                   : INT
+  date_submitted           : DATETIME
+}
+
+note bottom of SUB
+  status = 1  QUEUED
+  status = 3  PUBLISHED
+  status = 4  DECLINED
+  status = 5  SCHEDULED (ArticuloAceptado)
+end note
+
+entity "publications" as PUB {
+  * publication_id   : INT       <<PK>>
+  --
+  * submission_id    : INT       <<FK>>
+  * section_id       : INT       <<FK>>
+  primary_contact_id : INT       <<FK>>
+  status             : INT
+  date_published     : DATE
+  version            : INT
+}
+
+entity "authors" as A {
+  * author_id      : INT         <<PK>>
+  --
+  * publication_id : INT         <<FK>>
+  user_group_id    : INT         <<FK>>
+  email            : VARCHAR(90)
+  seq              : FLOAT
+}
+
+entity "submission_files" as SF {
+  * file_id        : INT         <<PK>>
+  * revision       : INT         <<PK>>
+  --
+  * submission_id      : INT     <<FK>>
+  uploader_user_id     : INT     <<FK>>
+  file_stage       : INT
+  file_type        : VARCHAR(255)
+  file_size        : INT
+}
+
+entity "publication_galleys" as G {
+  * galley_id      : INT         <<PK>>
+  --
+  * publication_id : INT         <<FK>>
+  file_id          : INT         <<FK>>
+  locale           : VARCHAR(14)
+  label            : VARCHAR(255)
+  is_approved      : BOOLEAN
+}
+
+entity "review_rounds" as RR {
+  * review_round_id : INT        <<PK>>
+  --
+  * submission_id  : INT         <<FK>>
+  stage_id         : INT
+  round            : INT
+  status           : INT
+}
+
+entity "review_assignments" as RA {
+  * review_id      : INT         <<PK>>
+  --
+  * submission_id  : INT         <<FK>>
+  * reviewer_id    : INT         <<FK>>
+  review_round_id  : INT         <<FK>>
+  stage_id         : INT
+  declined         : BOOLEAN
+  date_assigned    : DATETIME
+  date_due         : DATETIME
+}
+
+entity "edit_decisions" as ED {
+  * edit_decision_id : INT       <<PK>>
+  --
+  * submission_id  : INT         <<FK>>
+  * editor_id      : INT         <<FK>>
+  review_round_id  : INT         <<FK>>
+  decision         : INT
+  date_decided     : DATETIME
+}
+
+J   ||--o{ S    : "tiene"
+J   ||--o{ IS   : "publica"
+J   ||--o{ SUB  : "recibe"
+J   ||--o{ UG   : "define"
+
+U   ||--o{ UUG  : " "
+UG  ||--o{ UUG  : " "
+UG  ||--o{ A    : "rol de"
+
+S   ||--o{ PUB  : "categoriza"
+IS  ||--o{ PUB  : "agrupa"
+
+SUB ||--o{ PUB  : "versiona"
+SUB ||--o{ SF   : "adjunta"
+SUB ||--o{ RR   : "tiene"
+SUB ||--o{ RA   : "asignado"
+SUB ||--o{ ED   : "registra"
+
+PUB ||--o{ A    : "escrito por"
+PUB ||--o{ G    : "formateado"
+
+SF  ||--o{ G    : "referenciado"
+
+RR  ||--o{ RA   : "contiene"
+RR  ||--o{ ED   : "vinculado"
+
+U   ||--o{ RA   : "revisa"
+U   ||--o{ ED   : "decide"
+U   ||--o{ SF   : "sube"
+
+@enduml

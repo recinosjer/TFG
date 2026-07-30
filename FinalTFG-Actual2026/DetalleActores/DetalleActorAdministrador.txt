@@ -1,0 +1,43 @@
+@startuml Administrador
+
+left to right direction
+skinparam actorStyle awesome
+skinparam usecaseBorderColor #1E6292
+skinparam usecaseBackgroundColor #EAF4FB
+skinparam actorBorderColor #1E6292
+
+actor "Lector"                   as lector
+actor "Editor"                   as editor
+actor "Gestor de Revista"        as gestor
+actor "Administrador\ndel Sitio" as admin
+
+editor --|> lector
+gestor --|> editor
+admin  --|> gestor
+
+rectangle "Sistema OJS 3.4.1" {
+
+  package "Propios del Administrador" {
+    usecase "Gestionar Plugins"                as UC25
+    usecase "Gestionar Idiomas\nde Plataforma" as UC26
+    usecase "Migrar Datos"                     as UC27
+    usecase "Administrar Plataforma"           as UC28
+    usecase "Asignar Roles\na nivel de Plataforma" as UC29
+  }
+
+}
+
+admin --> UC25
+admin --> UC26
+admin --> UC27
+admin --> UC28
+admin --> UC29
+
+note right of admin
+  Hereda transitivamente:
+  - Todo lo de Gestor de Revista
+  - Todo lo de Editor
+  - Todo lo de Lector
+end note
+
+@enduml

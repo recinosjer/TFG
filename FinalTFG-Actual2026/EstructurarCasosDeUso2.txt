@@ -1,0 +1,79 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FCE4C4
+  BorderColor #C9971E
+  ArrowColor #666666
+}
+skinparam actor {
+  BorderColor #4A90D9
+}
+skinparam rectangle {
+  BorderColor #333333
+}
+
+left to right direction
+
+actor Autor
+actor Revisor
+actor Lector
+
+rectangle "Proceso Editorial" {
+  usecase "Consultar Estado\ndel Envío" as UC_Seguimiento
+  usecase "Enviar\nManuscrito" as UC_Enviar
+  UC_Seguimiento ..> UC_Enviar : <<extend>>
+}
+
+rectangle "Acceso" {
+  usecase "Cerrar Sesión" as UC_Cerrar
+  usecase "Recuperar\nContraseña" as UC_Recuperar
+  usecase "Iniciar Sesión" as UC_Login
+  usecase "Registrarse" as UC_Registrarse
+  UC_Recuperar ..> UC_Login : <<extend>>
+}
+
+rectangle "Certificados" {
+  usecase "Solicitar\nCertificado" as UC_Certificado
+  usecase "Generar PDF\nCertificado" as UC_PDF
+  UC_Certificado ..> UC_PDF : <<include>>
+}
+
+rectangle "Consulta" {
+  usecase "Ver Detalle\nde Artículo" as UC_Detalle
+  usecase "Filtrar por\nRevista" as UC_Filtrar
+  usecase "Consultar Artículos\nAceptados" as UC_Consultar
+  UC_Detalle ..> UC_Consultar : <<extend>>
+  UC_Filtrar ..> UC_Consultar : <<extend>>
+}
+
+Autor --> UC_Enviar
+Autor --> UC_Cerrar
+Revisor --> UC_Cerrar
+Lector --> UC_Cerrar
+Autor --> UC_Recuperar
+Revisor --> UC_Recuperar
+Lector --> UC_Recuperar
+Autor --> UC_Registrarse
+Revisor --> UC_Registrarse
+Lector --> UC_Registrarse
+Autor --> UC_Login
+Revisor --> UC_Login
+Lector --> UC_Login
+Lector --> UC_Consultar
+Autor --> UC_Certificado
+Revisor --> UC_Certificado
+
+UC_Enviar ..> UC_Login : <<include>>
+UC_Certificado ..> UC_Login : <<include>>
+
+actor "Administrador\ndel Sitio" as Admin
+
+rectangle "Gestión Técnica de la Plataforma" {
+  usecase "Migrar Datos" as UC_Migrar
+  usecase "Personalizar\nPlataforma" as UC_Personalizar
+}
+
+Admin --> UC_Migrar
+Admin --> UC_Personalizar
+@enduml

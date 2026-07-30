@@ -1,0 +1,48 @@
+@startuml
+skinparam backgroundColor white
+skinparam sequence {
+  ArrowColor #2E7D32
+  LifeLineBorderColor #2E7D32
+  ParticipantBorderColor black
+  ParticipantBackgroundColor #A9D18E
+  ParticipantFontColor black
+  ActorBorderColor black
+  ActorBackgroundColor white
+  FontColor black
+}
+skinparam shadowing false
+
+actor Administrador
+participant "Herramienta de Migración" as Herramienta
+participant "Sistema OJS" as OJS
+database "Base de Datos" as BD
+
+Administrador -> Herramienta: Solicita copia de seguridad
+Herramienta -> BD: Realiza copia de seguridad
+BD --> Herramienta: Confirma copia completada
+
+Administrador -> Herramienta: Exportar usuarios y roles
+Herramienta -> OJS: Exportar usuarios y roles (herramienta nativa)
+OJS --> Herramienta: Devuelve archivo exportado
+Herramienta -> BD: Importa usuarios y roles
+BD --> Herramienta: Confirma importación
+
+Administrador -> Herramienta: Exportar números y artículos
+Herramienta -> OJS: Exportar números y artículos (XML OJS 3.1)
+OJS --> Herramienta: Devuelve XML nativo
+Herramienta -> Herramienta: Ejecuta conversión de estructura
+
+alt Conversión exitosa
+  Herramienta -> BD: Importa XML convertido
+  BD --> Herramienta: Confirma importación y emparejado de autores
+  Administrador -> OJS: Configura manualmente contenidos no estructurados
+  OJS -> BD: Guarda configuración editorial
+  BD --> OJS: Confirma
+  Herramienta -> BD: Verifica integridad de datos
+  BD --> Herramienta: Devuelve resultado de verificación
+  Herramienta -> Administrador: Presenta logs del proceso
+else Conversión fallida
+  Herramienta -> Administrador: Muestra error de conversión
+  Herramienta -> Administrador: Informa que no se alteraron datos migrados
+end
+@enduml

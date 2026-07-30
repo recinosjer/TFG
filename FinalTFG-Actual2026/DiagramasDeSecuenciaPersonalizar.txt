@@ -1,0 +1,41 @@
+@startuml
+skinparam backgroundColor white
+skinparam sequence {
+  ArrowColor #2E7D32
+  LifeLineBorderColor #2E7D32
+  ParticipantBorderColor black
+  ParticipantBackgroundColor #A9D18E
+  ParticipantFontColor black
+  ActorBorderColor black
+  ActorBackgroundColor white
+  FontColor black
+}
+skinparam shadowing false
+
+actor Administrador
+participant "Panel de Administración" as Panel
+participant "Sistema OJS" as OJS
+database "Base de Datos" as BD
+
+Administrador -> Panel: Activar Plugin de Tema
+Panel -> OJS: Activa plugin de tema
+OJS -> BD: Registra configuración del tema
+BD --> OJS: Confirma
+OJS --> Panel: Tema activado
+
+Administrador -> Panel: Activar Plugin Genérico
+Panel -> OJS: Activa plugin genérico
+OJS -> BD: Registra configuración del plugin
+BD --> OJS: Confirma
+OJS --> Panel: Plugin genérico activado
+
+Administrador -> Panel: Desplegar microservicio de certificados
+Panel -> BD: Conecta microservicio a la base de datos
+BD --> Panel: Confirma conexión
+
+Administrador -> Panel: Configurar parámetros de cada componente
+Panel -> BD: Guarda parámetros de configuración
+BD --> Panel: Confirma guardado
+Panel --> Administrador: Plataforma personalizada operativa
+@enduml
+

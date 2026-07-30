@@ -1,0 +1,39 @@
+@startuml
+skinparam usecase {
+  BackgroundColor #F2F2F2
+  BorderColor black
+}
+skinparam actor {
+  BorderColor black
+}
+skinparam ArrowColor black
+skinparam shadowing false
+left to right direction
+
+actor "Autor" as Autor
+actor "Editor" as Editor
+
+rectangle "Módulo Proceso Editorial" {
+  usecase "Enviar Manuscrito" as UC1
+  usecase "Consultar Estado\ndel Envío" as UC2
+  usecase "Subir Versión\nRevisada" as UC3
+  usecase "Gestionar Envíos\nAsignados" as UC4
+  usecase "Asignar Revisores" as UC5
+  usecase "Tomar Decisión\nEditorial" as UC6
+  usecase "Preparar Galeradas" as UC7
+}
+
+Autor --> UC1
+Autor --> UC2
+Autor --> UC3
+
+Editor --> UC4
+Editor --> UC5
+Editor --> UC6
+Editor --> UC7
+
+note bottom of UC6
+  Requiere las evaluaciones entregadas
+  por el Revisor en (Módulo Revisión).
+end note
+@enduml

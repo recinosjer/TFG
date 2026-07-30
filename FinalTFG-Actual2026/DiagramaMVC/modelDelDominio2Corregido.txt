@@ -1,0 +1,78 @@
+@startuml
+skinparam shadowing false
+skinparam defaultFontColor #1B1B1B
+skinparam class {
+  BackgroundColor #E9F6EA
+  BorderColor #4C8C4A
+  ArrowColor #4C8C4A
+  FontColor #1B1B1B
+}
+skinparam legend {
+  BackgroundColor #FDF6E3
+  BorderColor #A88B00
+}
+
+together {
+  class Usuario
+  class GrupoUsuario
+  class Autor
+  class Editor
+  class Gestor
+  class Revisor
+}
+
+class Lector
+
+together {
+  class Plataforma
+  class PaginaIndependiente
+  class Revista
+  class Volumen
+  class Numero
+  class Estadistica
+}
+
+together {
+  class Envio
+  class Revision
+  class Articulo
+  class ArticuloAceptado
+  class Galera
+}
+
+class Certificado
+
+Usuario -- GrupoUsuario : asignado a
+GrupoUsuario -- Editor : define
+GrupoUsuario -- Autor : define
+GrupoUsuario -- Revisor : define
+GrupoUsuario -- Lector : define
+GrupoUsuario -- Gestor : define
+
+Plataforma *-- PaginaIndependiente : contiene
+Plataforma *-- Revista : contiene
+Revista *-- Volumen : publica
+Revista -- Estadistica : registra
+Revista -- Certificado : emite
+Autor -- Certificado : solicita
+Revisor -- Certificado : solicita
+Volumen *-- Numero : contiene
+Gestor -- Numero : gestiona
+
+Numero o-- Articulo : agrupa
+Lector -- Articulo : consulta
+Autor -- Envio : realiza
+Editor -- Envio : gestiona
+Envio -- Articulo : genera
+Articulo -- ArticuloAceptado : enviado a
+Revisor -- Revision : realiza
+Envio -- Revision : sometido a
+Articulo *-- Galera : disponible en
+
+legend right
+  |= Nota |= Explicación |
+  | (1) ArticuloAceptado | Es un estado calculado sobre Articulo (status=3 PUBLISHED sin número/issueId asignado). |
+  | (2) Articulo {xor} | Un Articulo solo puede estar agrupado en un Numero **o** enviado a ArticuloAceptado, nunca ambas a la vez. |
+  | (3) Gestor vs Editor | Editor gestiona el flujo editorial de un Envio concreto; Gestor administra Numero/Volumen a nivel de revista. |
+endlegend
+@enduml

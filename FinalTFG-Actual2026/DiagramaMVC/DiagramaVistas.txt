@@ -1,0 +1,75 @@
+@startuml Vistas
+
+hide empty members
+
+skinparam packageBorderColor #333333
+skinparam packageBackgroundColor #FAFAFA
+skinparam class {
+  BackgroundColor #F0F0F0
+  BorderColor #666666
+  FontSize 11
+}
+skinparam arrowColor #444444
+
+package "Views" {
+
+  package "Auth" {
+    class "LoginView"    << (V,#9999CC) >>
+    class "RegisterView" << (V,#9999CC) >>
+  }
+
+  package "User" {
+    class "HomeView"          << (V,#9999CC) >>
+    class "ArticlesView"      << (V,#9999CC) >>
+    class "ArticleDetailView" << (V,#9999CC) >>
+    class "CertificatesView"  << (V,#9999CC) >>
+    class "StatisticsView"    << (V,#9999CC) >>
+
+    package "Author" {
+      class "SubmissionsView"      << (V,#9999CC) >>
+      class "SubmissionWizardView" << (V,#9999CC) >>
+    }
+
+    package "Reviewer" {
+      class "ReviewDashboardView"  << (V,#9999CC) >>
+      class "ReviewSubmissionView" << (V,#9999CC) >>
+    }
+  }
+
+  package "Management" {
+    class "EditorialDashboardView" << (V,#9999CC) >>
+    class "CopyEditView"           << (V,#9999CC) >>
+    class "GalleysView"            << (V,#9999CC) >>
+    class "JournalSettingsView"    << (V,#9999CC) >>
+    class "UsersView"              << (V,#9999CC) >>
+    class "SectionsView"           << (V,#9999CC) >>
+    class "IssuesView"             << (V,#9999CC) >>
+
+    package "Admin" {
+      class "SiteAdminView"  << (V,#9999CC) >>
+      class "PluginsView"    << (V,#9999CC) >>
+      class "LanguagesView"  << (V,#9999CC) >>
+      class "MigrationView"  << (V,#9999CC) >>
+    }
+  }
+}
+
+LoginView              o-- HomeView
+HomeView               o-- ArticlesView
+ArticlesView           o-- ArticleDetailView
+HomeView               o-- CertificatesView
+HomeView               o-- StatisticsView
+HomeView               o-- SubmissionsView
+SubmissionsView        o-- SubmissionWizardView
+HomeView               o-- ReviewDashboardView
+ReviewDashboardView    o-- ReviewSubmissionView
+EditorialDashboardView o-- CopyEditView
+CopyEditView           o-- GalleysView
+JournalSettingsView    o-- UsersView
+JournalSettingsView    o-- SectionsView
+JournalSettingsView    o-- IssuesView
+SiteAdminView          o-- PluginsView
+SiteAdminView          o-- LanguagesView
+SiteAdminView          o-- MigrationView
+
+@enduml

@@ -1,0 +1,31 @@
+@startuml ContextoAutor
+skinparam state {
+  BackgroundColor #F8F8F8
+  BorderColor #555555
+  FontSize 11
+}
+skinparam ArrowColor #555555
+
+state "Autor\n(No autenticado)" as noauth
+state "Autor\n(Autenticado)"    as auth
+state "Inicio"                  as home
+state "Listando Envíos"         as envios
+state "Registrando Envío"       as nuevo
+state "Listando Artículos"      as articulos
+state "Consultando Estadísticas" as stats
+state "Consultando Certificados" as cert
+
+noauth    --> auth      : Login / Registro
+auth      --> noauth    : Logout
+auth      --> home      : Cargar inicio
+home      --> envios    : Ver mis envíos
+envios    --> envios    : Retirar envío
+envios    --> nuevo     : Crear nuevo envío
+nuevo     --> nuevo     : Subir fichero\nAñadir metadatos\nConfirmar envío
+nuevo     --> envios    : Envío registrado
+home      --> articulos : Ver artículos
+articulos --> articulos : Descargar PDF
+home      --> stats     : Ver estadísticas
+home      --> cert      : Buscar certificado
+cert      --> cert      : Descargar certificado
+@enduml

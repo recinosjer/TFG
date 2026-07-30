@@ -1,0 +1,27 @@
+@startuml
+left to right direction
+skinparam usecase {
+  BackgroundColor #F2F2F2
+  BorderColor black
+}
+skinparam actor {
+  BorderColor black
+}
+skinparam ArrowColor black
+skinparam shadowing false
+
+actor Autor
+actor Revisor
+
+rectangle "Módulo Certificados" {
+  usecase "Solicitar Certificado\nde Autor" as UC1
+  usecase "Solicitar Certificado\nde Revisor" as UC2
+  usecase "Generar PDF\nde Certificado" as UC3
+  UC1 ..> UC3 : <<include>>
+  UC2 ..> UC3 : <<include>>
+}
+
+Autor --> UC1
+Revisor --> UC2
+@enduml
+

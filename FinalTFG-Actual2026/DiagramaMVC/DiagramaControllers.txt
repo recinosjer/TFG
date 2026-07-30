@@ -1,0 +1,28 @@
+@startuml Controladores
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #FFFFFF
+  FontSize 11
+}
+skinparam packageBorderColor #333333
+skinparam packageBackgroundColor #FFFFFF
+
+package "Controllers" {
+  class "ThemePlugin"          << control >>
+  class "RegistrationHandler"  << control >>
+  class "GenericPlugin"        << control >>
+  class "AuthHandler"          << control >>
+  class "SubmissionHandler"    << control >>
+  class "ReviewHandler"        << control >>
+  class "EditorHandler"        << control >>
+  class "IssueHandler"         << control >>
+}
+
+"ThemePlugin"         -[hidden]r- "RegistrationHandler"
+"RegistrationHandler" -[hidden]r- "GenericPlugin"
+"AuthHandler"         -[hidden]r- "SubmissionHandler"
+"SubmissionHandler"   -[hidden]r- "ReviewHandler"
+"EditorHandler"       -[hidden]r- "IssueHandler"
+"ThemePlugin"         -[hidden]d- "AuthHandler"
+"AuthHandler"         -[hidden]d- "EditorHandler"
+@enduml

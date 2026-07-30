@@ -1,0 +1,37 @@
+@startuml
+left to right direction
+
+actor "Administrador\ndel Sitio" as Admin
+actor "Gestor de Revista" as Gestor
+actor "Editor" as Editor
+actor "Lector" as Lector
+
+Gestor -right-> Editor
+Editor -right-> Lector
+Admin .up.|> Gestor
+
+note top of Gestor
+  Hereda transitivamente:
+  - Todo lo de Gestor de Revista
+  - Todo lo de Editor
+  - Todo lo de Lector
+end note
+
+rectangle "Sistema OJS 3.4.1" {
+  rectangle "Propios del Administrador" {
+    usecase "Asignar Roles\na nivel de Plataforma" as UC1
+    usecase "Administrar Plataforma" as UC2
+    usecase "Migrar Datos" as UC3
+    usecase "Personalizar Plataforma" as UC4
+    usecase "Gestionar Idiomas\nde Plataforma" as UC5
+    usecase "Gestionar Plugins" as UC6
+  }
+}
+
+Admin --> UC1
+Admin --> UC2
+Admin --> UC3
+Admin --> UC4
+Admin --> UC5
+Admin --> UC6
+@enduml

@@ -1,0 +1,44 @@
+@startuml SecuenciaRegistrarse
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #4C8C4A
+  ActorBorderColor #4C8C4A
+  LifeLineBorderColor #4C8C4A
+  ParticipantBorderColor #4C8C4A
+  ParticipantBackgroundColor #E9F6EA
+  DatabaseBorderColor #4C8C4A
+  DatabaseBackgroundColor #E9F6EA
+}
+
+title Diagrama de Secuencia - Registrarse
+
+actor Usuario
+participant "Página Registro" as Pagina
+participant "Sistema OJS" as OJS
+database "Base de Datos" as BD
+
+Usuario -> Pagina: Solicita registrarse
+Pagina --> Usuario: Presenta formulario de registro\ny selección de revistas/rol (Lector o Autor)
+Usuario -> Pagina: Introduce datos, selecciona revistas\ny rol deseado en cada una
+Pagina -> OJS: Envía datos de registro y roles seleccionados
+OJS -> BD: Verifica si el email ya existe
+
+alt Email no registrado
+    OJS -> BD: Registra nuevo usuario
+
+    alt Seleccionó rol Autor en alguna revista
+        OJS -> BD: Asigna los roles seleccionados\n(Lector y/o Autor)
+    else No seleccionó Autor
+        OJS -> BD: Asigna rol Lector por defecto
+    end
+
+    BD --> OJS: Confirma registro
+    OJS --> Pagina: Redirige a página principal
+    Pagina --> Usuario: Presenta página principal
+else Email ya registrado
+    OJS --> Pagina: Devuelve error de email duplicado
+    Pagina --> Usuario: Muestra mensaje de error
+end
+
+@enduml

@@ -1,0 +1,56 @@
+@startuml DiagramaDespliegue
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam component {
+  BackgroundColor #CCE5FF
+  BorderColor #4A90D9
+}
+skinparam database {
+  BackgroundColor #FFE6B3
+  BorderColor #C9971E
+}
+
+actor "Usuario\n(Navegador)" as Usuario
+
+frame "Docker Host" {
+  node "pkp_app\n(Apache 2.4 + PHP 8.2)" as pkp_app {
+    component "OJS 3.4.0.1\n----\nThemePlugin\nGenericPlugin" as ojs
+  }
+
+  node "certificados-service\n(Node.js, puerto 5000)" as certsvc
+
+  frame "Almacenamiento Local" {
+    folder "/var/www/html\n(OJS + plugins)" as htmlDir
+    folder "/var/www/files\n(ficheros privados)" as filesDir
+    folder "/var/log/apache2\n(logs)" as logsDir
+    database "pkp_db\nMariaDB 11.8" as db
+  }
+}
+
+Usuario --> pkp_app : HTTP(S) request\n(puerto 8080 / 8443)
+pkp_app --> Usuario : HTTP(S) response\n(HTML / JSON)
+
+Usuario --> certsvc : HTTP request\n(puerto 5000, /certificados)
+certsvc --> Usuario : PDF generado
+
+pkp_app --> htmlDir : leer plugins\ny plantillas
+pkp_app --> filesDir : leer / escribir\nficheros privados
+pkp_app --> logsDir : escribir logs
+
+pkp_app --> db : consultas SQL\n(red: inside)
+db --> pkp_app : resultados
+
+certsvc --> db : consultas SQL\n(red: inside)
+db --> certsvc : resultados
+
+note bottom of certsvc
+  Contenedor independiente, no
+  definido en docker-compose.yml
+  (se levanta por separado).
+  Misma red Docker "inside" que
+  pkp_db. Genera el PDF con
+  wkhtmltopdf y lee logo/firma
+  desde public/site/.
+end note
+@enduml

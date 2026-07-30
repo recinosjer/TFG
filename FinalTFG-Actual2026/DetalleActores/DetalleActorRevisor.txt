@@ -1,0 +1,34 @@
+@startuml Revisor
+
+left to right direction
+skinparam actorStyle awesome
+skinparam usecaseBorderColor #1E6292
+skinparam usecaseBackgroundColor #EAF4FB
+skinparam actorBorderColor #1E6292
+
+' Herencia: Revisor extiende a Lector
+actor "Lector"  as lector
+actor "Revisor" as revisor
+
+revisor --|> lector
+
+rectangle "Sistema OJS 3.4.1" {
+
+  usecase "Aceptar Invitación\na Revisar"   as UC14
+  usecase "Rechazar Invitación\na Revisar"  as UC15
+  usecase "Realizar Revisión"               as UC16
+  usecase "Solicitar Certificado\nde Revisor" as UC17
+
+}
+
+revisor --> UC14
+revisor --> UC15
+revisor --> UC16
+revisor --> UC17
+
+note bottom of lector
+  El Revisor hereda todos
+  los casos de uso del Lector
+end note
+
+@enduml

@@ -1,0 +1,40 @@
+@startuml FlujoRegistrarse
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor #FDF6E3
+  BorderColor #A88B00
+  ArrowColor #4C8C4A
+  DiamondBackgroundColor #FDF6E3
+  DiamondBorderColor #A88B00
+}
+
+title Registrarse
+
+start
+:El usuario solicita registrarse;
+:El sistema presenta el formulario de registro con nombre,
+apellidos, email, usuario y contraseña, y permite
+seleccionar las revistas y el rol deseado (Lector o Autor)
+en cada una;
+:El usuario completa los datos, selecciona sus revistas
+y roles, y solicita registrar;
+
+if (¿Email ya registrado?) then (Sí)
+  :El sistema muestra un mensaje indicando
+  que el email ya existe;
+  :El sistema permite volver a introducir los datos;
+  stop
+else (No)
+  :El sistema registra al nuevo usuario;
+  if (¿Seleccionó rol Autor en alguna revista?) then (Sí)
+    :El sistema asigna los roles seleccionados
+    (Lector y/o Autor) por revista;
+  else (No)
+    :El sistema asigna el rol Lector por defecto;
+  endif
+  :El sistema presenta la página principal;
+  stop
+endif
+
+@enduml

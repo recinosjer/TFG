@@ -1,0 +1,41 @@
+@startuml
+
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam ArrowColor #990033
+skinparam ArrowFontSize 10
+skinparam ArrowFontColor #333333
+
+skinparam component {
+    FontColor white
+    FontSize 11
+    FontStyle bold
+    BorderThickness 2
+}
+
+skinparam actor {
+    BorderColor #990033
+    FontColor #990033
+}
+
+component ":Collaboration\nDescargaCertificado" as COLLAB #90C878
+component "CertificadoView"        as VIEW  #5580CC
+component "CertificadoService"     as SVC   #787030
+component "UserRepository"         as UREPO #E09030
+component "CertificatesRepository" as CREPO #E09030
+component "IssnRepository"         as IREPO #E09030
+component "PDFGenerator"           as PDF   #E09030
+
+actor "usuario" as USER
+
+USER --> VIEW  : generateCertificate(dni, year, rol)
+VIEW --> SVC   : POST /certificados(requestBody)
+SVC  --> UREPO : getUserByUsername(username)
+SVC  --> CREPO : getArticles(userId, year, rol, context)
+SVC  --> IREPO : getISSNByContextId(context)
+SVC  --> PDF   : generate(htmlContent)
+
+VIEW -up-> COLLAB : downloadPDF(filename)
+
+@enduml

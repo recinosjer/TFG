@@ -1,0 +1,35 @@
+@startuml Lector
+
+left to right direction
+skinparam actorStyle awesome
+skinparam usecaseBorderColor #1E6292
+skinparam usecaseBackgroundColor #EAF4FB
+skinparam actorBorderColor #1E6292
+
+actor "Lector" as lector
+
+rectangle "Sistema OJS 3.4.1" {
+
+  usecase "Registrarse"                   as UC01
+  usecase "Iniciar Sesión"                as UC02
+  usecase "Cerrar Sesión"                 as UC03
+  usecase "Recuperar Contraseña"          as UC04
+  usecase "Cambiar Idioma"                as UC05
+  usecase "Consultar Artículos\nPublicados" as UC06
+  usecase "Consultar Artículos\nAceptados"  as UC07
+  usecase "Descargar Galerada"            as UC08
+  usecase "Consultar Estadísticas"        as UC09
+
+}
+
+lector --> UC01
+lector --> UC02
+lector --> UC03
+lector --> UC04
+lector --> UC05
+lector --> UC06
+lector --> UC07
+lector --> UC08
+lector --> UC09
+
+@enduml
