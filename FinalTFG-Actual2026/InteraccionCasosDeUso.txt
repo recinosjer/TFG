@@ -1,0 +1,69 @@
+@startuml
+skinparam state {
+  BackgroundColor #DCEEDC
+  BorderColor #6B8E6B
+  FontColor #000000
+}
+skinparam note {
+  BackgroundColor #FFF9C4
+  BorderColor #B8A400
+}
+
+[*] --> Inicial
+
+Inicial --> SinSesion : Registrarse
+Inicial --> SesionActiva : Iniciar Sesión
+
+state SinSesion
+note right of SinSesion
+  Consultar artículos publicados
+  Consultar artículos aceptados
+  Ver números · Descargar PDFs
+end note
+
+SinSesion --> SesionActiva : Iniciar Sesión
+SinSesion --> [*] : Salir
+
+state SesionActiva
+note right of SesionActiva
+  Solicitar Certificado (Revisor/Autor)
+  Consultar contenido · Editar perfil
+end note
+
+SesionActiva --> ProcesoRevisor : Recibir Invitación a Revisar
+SesionActiva --> ProcesoEditor : Gestionar Envíos
+SesionActiva --> ProcesoAutor : Enviar Manuscrito / Consultar Estado del Envío
+SesionActiva --> ProcesoAdmin : Gestionar Revista / Administrar Sistema
+SesionActiva --> [*] : Cerrar Sesión
+
+state "Proceso del Revisor" as ProcesoRevisor {
+  [*] --> InvitacionRevision
+  InvitacionRevision --> RevisionEnCurso : Aceptar Invitación
+  InvitacionRevision --> [*] : Rechazar Invitación
+  RevisionEnCurso --> [*] : Emitir Evaluación
+}
+
+state "Proceso del Editor" as ProcesoEditor {
+  [*] --> GestionEditorial
+  GestionEditorial --> GestionEditorial : Asignar Revisor / Solicitar Cambios
+  GestionEditorial --> Produccion : Aceptar Manuscrito
+  GestionEditorial --> [*] : Rechazar Manuscrito
+  Produccion --> [*] : Publicar Número
+}
+
+state "Proceso del Autor" as ProcesoAutor {
+  [*] --> EnvioEnCurso
+  EnvioEnCurso --> SeguimientoEnvio : Confirmar Envío
+  SeguimientoEnvio --> SeguimientoEnvio : Subir Versión Revisada
+  SeguimientoEnvio --> [*] : Cancelar Envío
+}
+
+state "Proceso de Administrados" as ProcesoAdmin {
+  note as N1
+    Gestionar usuarios y roles
+    Configurar secciones y plugins
+    Migrar datos · Administrar plataforma
+  end note
+}
+
+@enduml
