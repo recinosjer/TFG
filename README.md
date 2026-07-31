@@ -56,7 +56,7 @@ Jerarquía de herencia: **Lector** (base) → **Autor** / **Revisor** → **Edit
 
 | Actor | Diagrama de contexto |
 |---|---|
-| Administrador del Sitio (Migrar Datos, Personalizar Plataforma) | ![Contexto Administrador](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoAdministrador.png) |
+| Administrador del Sitio (Migrar Datos, Personalizar Plataforma) | ![Contexto Administrador](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoActorfinal.svg) |
 | Autor (Solicitar Certificado) | ![Contexto Autor](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoAutor.png) |
 | Revisor (Solicitar Certificado) | ![Contexto Revisor](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoRevisor.png) |
 | Lector (Consultar Artículos Aceptados) | ![Contexto Lector](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoLector.png) |
@@ -127,7 +127,7 @@ Estas clases de análisis (`CertificadoService`, `UserImportExportPlugin`, `Fast
 |---|---|
 | Modelos | ![Modelos](FinalTFG-Actual2026/DiagramaMVC/DiagramaModels.png) |
 | Controladores | ![Controladores](FinalTFG-Actual2026/DiagramaMVC/DiagramaControllers.png) |
-| Vistas | ![Vistas](<FinalTFG-Actual2026/DiagramaMVC/Diagrama de Vistas.png>) |
+| Vistas | ![Vistas](FinalTFG-Actual2026/Vistas.svg) |
 
 Clases relevantes para los 4 casos de uso presentados: `ThemePlugin` y `GenericPlugin` (Personalizar Plataforma), `UserImportExportPlugin` / `NativeImportExportPlugin` / `FastConverter` (Migrar Datos), `CertificadoView` / `CertificadoService` (Solicitar Certificado).
 
@@ -137,11 +137,43 @@ Clases relevantes para los 4 casos de uso presentados: `ThemePlugin` y `GenericP
 
 Migrar Datos y Personalizar Plataforma no requirieron diseño propio: reutilizan los módulos nativos de importación/exportación y configuración del sitio de OJS, por eso se muestran directamente en alta fidelidad. Consultar Artículos Aceptados y Solicitar Certificado sí tuvieron wireframe propio antes de implementarse.
 
-*Pendiente: subir las imágenes de prototipo de estos 4 casos de uso al repositorio.*
+### Migrar Datos
+
+![Prototipo Migrar Datos](FinalTFG-Actual2026/prototipos/PrototipCasoDeUsoMigrarDatos.png)
+![Prototipo Migrar Datos Números y Artículos](FinalTFG-Actual2026/prototipos/PrototipCasoDeUsoMigrarDatosYArticulos.png)
+![Prototipo Herramienta de Migración](FinalTFG-Actual2026/prototipos/PrototipCasoDeUsoMigrarDatosHerramienta.png)
+
+### Personalizar Plataforma
+
+![Prototipo Personalizar Plataforma (Tema)](<FinalTFG-Actual2026/prototipos/PrototipCasoDeUsoPersonalizarPlataforma(Tema).png>)
+![Prototipo Personalizar Plataforma (Módulos)](<FinalTFG-Actual2026/prototipos/PrototipCasoDeUsoPersonalizarPlataforma(Modulo).png>)
+
+### Consultar Artículos Aceptados
+
+![Prototipo Artículos Aceptados](FinalTFG-Actual2026/prototipos/PrototipCasoDeUsoArticulosAceptados.png)
+
+### Solicitar Certificado
+
+![Prototipo Solicitar Certificado](FinalTFG-Actual2026/prototipos/PrototipCasoDeUsoCertificados.png)
 
 ## La plataforma en funcionamiento
 
-*Pendiente: subir las capturas reales de Migrar Datos, Personalizar Plataforma, Artículos Aceptados y el PDF de Certificado (capítulo 5 del TFG).*
+### Migrar Datos
+
+![Herramienta de Migración en funcionamiento](FinalTFG-Actual2026/VistaCasosDeUso/VistaSolucionMigrarDatosHerramienta.png)
+
+### Personalizar Plataforma
+
+No hay captura real independiente: la interfaz de personalización es la misma pantalla nativa de OJS mostrada en el prototipo (ver sección anterior).
+
+### Consultar Artículos Aceptados
+
+![Artículos Aceptados en funcionamiento](FinalTFG-Actual2026/VistaCasosDeUso/VistaSolucionArticulosAceptados.png)
+
+### Solicitar Certificado
+
+![Formulario de solicitud de certificado](FinalTFG-Actual2026/VistaCasosDeUso/VistaSolucionCertificados.png)
+![PDF del certificado generado](FinalTFG-Actual2026/VistaCasosDeUso/VistaSolucionPDFCertificados.png)
 
 ## Arquitectura y stack tecnológico
 
