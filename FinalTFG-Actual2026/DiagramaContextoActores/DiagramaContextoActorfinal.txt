@@ -1,0 +1,48 @@
+@startuml
+skinparam state {
+  BackgroundColor #DCEEDC
+  BorderColor #6B8E6B
+}
+
+[*] --> AdminNoAuth
+
+state "Administrador\n(No autenticado)" as AdminNoAuth
+state "Administrador\n(Autenticado)" as AdminAuth
+
+AdminNoAuth --> AdminAuth : Login
+AdminAuth --> AdminNoAuth : Logout
+
+AdminAuth --> Dashboard : Cargar dashboard
+
+state Dashboard
+
+Dashboard --> ListandoPlugins : Gestionar plugins
+Dashboard --> ListandoIdiomas : Gestionar idiomas
+Dashboard --> ListandoRevistas : Gestionar revistas
+Dashboard --> ListandoRoles : Asignar roles
+Dashboard --> MigrandoDatos : Migrar datos
+Dashboard --> PersonalizandoPlataforma : Personalizar plataforma
+Dashboard --> ListandoUsuarios : Gestionar usuarios
+
+state ListandoPlugins
+ListandoPlugins --> ListandoPlugins : Activar / Desactivar\nConfigurar plugin
+
+state ListandoIdiomas
+ListandoIdiomas --> ListandoIdiomas : Instalar idioma\nEstablecer por defecto
+
+state ListandoRevistas
+ListandoRevistas --> ListandoRevistas : Crear revista\nAsignar gestor
+
+state ListandoRoles
+ListandoRoles --> ListandoRoles : Asignar rol en cualquier revista\n(Autor, Revisor, Editor, etc.)\nAsignar Admin de Sitio\nRevocar privilegios
+
+state MigrandoDatos
+MigrandoDatos --> MigrandoDatos : Ejecutar migración\nVerificar integridad\nVer logs
+
+state PersonalizandoPlataforma
+PersonalizandoPlataforma --> PersonalizandoPlataforma : Activar tema\nActivar plugin genérico\nDesplegar microservicio certificados\nConfigurar parámetros
+
+state ListandoUsuarios
+ListandoUsuarios --> ListandoUsuarios : Crear usuario\nEditar usuario\nEliminar usuario
+
+@enduml
