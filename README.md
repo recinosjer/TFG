@@ -56,7 +56,7 @@ Jerarquía de herencia: **Lector** (base) → **Autor** / **Revisor** → **Edit
 
 | Actor | Diagrama de contexto |
 |---|---|
-| Administrador del Sitio (Migrar Datos, Personalizar Plataforma) | ![Contexto Administrador](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoActorfinal.svg) |
+| Administrador del Sitio (Migrar Datos, Personalizar Plataforma) | ![Contexto Administrador](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoActorfinal.png) |
 | Autor (Solicitar Certificado) | ![Contexto Autor](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoAutor.png) |
 | Revisor (Solicitar Certificado) | ![Contexto Revisor](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoRevisor.png) |
 | Lector (Consultar Artículos Aceptados) | ![Contexto Lector](FinalTFG-Actual2026/DiagramaContextoActores/DiagramaContextoLector.png) |
